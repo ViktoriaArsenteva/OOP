@@ -18,7 +18,6 @@ public abstract class Base implements BaseInterface {
     private static int idCounter;
     private int playerID;
     protected List<Base> gang;
-    protected Vector2 position;
 
     public Base(int attack, int defence, int shoot, int[] damage, double health, int speed, boolean delivery, boolean magic, String name) {
         this.attack = attack;
@@ -33,7 +32,6 @@ public abstract class Base implements BaseInterface {
         playerID = idCounter++;
     }
 
-    public Vector2 getPosition() {return position;}
     public int getPlayerID() {
         return playerID;
     }
