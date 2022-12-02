@@ -1,12 +1,14 @@
 package chars;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class Robber extends Base{
-    public Robber(List<Base> gang, int x, int y) {
-        super(8, 3, 0, new int[]{2,4}, 10, 6, false, false, "Robber");
-        super.gang = gang;
-        super.position = new Vector2(x, y);
-        
+public class Robber extends BaseHero {
+    public Robber(ArrayList<BaseHero> myParty, int x, int y) {
+        super(8, 3, new int[]{2,4}, 10, 6, "Robber", myParty, x, y);
+    }
+
+    @Override
+    public void step(ArrayList<BaseHero> party) {
+
     }
 }

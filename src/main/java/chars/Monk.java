@@ -1,13 +1,33 @@
 package chars;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class Monk extends Base {
-    public Monk(List<Base> gang, int x, int y) {
-        super(12, 7, 0, new int[]{-4,-4}, 30, 5, false, true, "Monk");
-        super.gang = gang;
-        super.position = new Vector2(x, y);
-        
+public class Monk extends BaseHero {
+
+    public Monk(ArrayList<BaseHero> myParty, int x, int y) {
+        super(12, 7, new int[]{-4,-4}, 30, 5, "Monk", myParty, x, y);
     }
 
+    public Monk(int attack, int protection, int[] damage, double health, int speed, String name, ArrayList<BaseHero> myParty, int x, int y) {
+        super(attack, protection, damage, health, speed, name, myParty, x, y);
+    }
+
+    @Override //Или добавить сюда проверку на статус "не мертвый?" Да
+    public void step(ArrayList<BaseHero> enemy) {
+        if (this.status.equals("dead")) return;
+        double mostDamaged = this.getMyParty().get(0).getMaxHealth() -
+                this.getMyParty().get(0).getHealth();
+            int mostDamagedInd = 0;
+            for (int i = 1; i < this.getMyParty().size(); i++) {
+                if ((this.getMyParty().get(i).getMaxHealth() -
+                        this.getMyParty().get(i).getHealth()) > mostDamaged) {
+                    mostDamaged = this.getMyParty().get(i).getMaxHealth() -
+                            this.getMyParty().get(i).getHealth();
+                    mostDamagedInd = i;
+                }
+            }
+        this.getMyParty().get(mostDamagedInd).damage(this.getDamage()[0]);
+        this.getMyParty().get(mostDamagedInd).status = "stand"; 
+    }
 }
+

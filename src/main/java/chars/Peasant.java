@@ -1,14 +1,16 @@
 package chars;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class Peasant extends Base {
+public class Peasant extends BaseHero {
 
+    public Peasant(ArrayList<BaseHero> myParty, int x, int y) {
+       super(1, 1, new int[]{1, 1}, 1, 3, "Peasant", myParty, x, y);
+    }
 
-    public Peasant(List<Base> gang, int x, int y) {
-        super(1, 1, 0, new int[]{1,1}, 1, 3, true, false, "Peasant");
-        super.gang = gang;
-        super.position = new Vector2(x, y);
-        
+    @Override
+    public void step(ArrayList<BaseHero> party) {
+        if (this.status.equals("dead")) return;
+        if (this.status.equals("used")) this.status = "stand";
     }
 }

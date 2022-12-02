@@ -1,8 +1,9 @@
 package chars;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface BaseInterface {
     String getInfo();
-    void step(List<Base> gang);
+
+    void step(ArrayList<BaseHero> enemy);
 }
