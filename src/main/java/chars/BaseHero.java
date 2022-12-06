@@ -1,22 +1,31 @@
 package chars;
 
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import Main.*;
 
 public abstract class BaseHero implements BaseInterface, Iterator {
-    private int attack;
-    private int defense;
-    private int[] damage;
-    private double health;
-    private double maxHealth;
-    private int speed;
-    private String name;
+    protected int attack;
+    protected int defense;
+    protected int[] damage;
+    protected int health;
+    protected int maxHealth;
+    protected int speed;
+    protected String name;
     protected ArrayList<BaseHero> myParty;
-    private Coordinates position;
-    protected String status; 
+    protected Coordinates position;
+    protected String status;
 
-    public BaseHero(int attack, int defense, int[] damage, double health, int speed, String name, ArrayList<BaseHero> myParty, int x, int y) {
+    protected String side;
+
+    private static int idCount = 0;
+
+    protected int id;
+
+    public BaseHero(int attack, int defense, int[] damage, int health, int speed, String name, ArrayList<BaseHero> myParty, int x, int y, String side) {
         this.attack = attack;
         this.defense = defense;
         this.damage = damage;
@@ -27,11 +36,25 @@ public abstract class BaseHero implements BaseInterface, Iterator {
         this.myParty = myParty;
         this.position = new Coordinates(x, y);
         this.status = "stand";
+        this.id = idCount++;
+        this.side = side;
     }
-    
+    /* Шпаргалка по имеющимся статусам
+     * stand - для всех. Жив и готов сражаться. По сути аналогичен статусу alive
+     * used - для крестьян, что они свою стрелу подали. Или для стрелков, что у них боеприпас закончился, а здоровье ещё нет
+     * dead - умер. Здоровье = или меньше 0
+     * */
+
+    public int getId() {
+        return id;
+    }
 
     public String getStatus() {
         return status;
+    }
+
+    public Coordinates getPosition() {
+        return position;
     }
 
     @Override
@@ -44,8 +67,8 @@ public abstract class BaseHero implements BaseInterface, Iterator {
                 ", speed=" + speed;
     }
 
-    //Для тренировки
     private int classFields;
+
     @Override
     public boolean hasNext() {
         return classFields++ < 8;
@@ -69,67 +92,40 @@ public abstract class BaseHero implements BaseInterface, Iterator {
     }
 
 
-
     public String getName() {
         return name;
     }
-    protected boolean equalsClass(BaseHero hero) {
-        return this.getName().equals(hero.getName());
-    }
 
-    public double getHealth() {
+    public int getHealth() {
         return health;
-    }
-
-    public double getMaxHealth() {
-        return maxHealth;
-    }
-
-    public int getAttack() {
-        return attack;
-    }
-
-    public int getDefense() {
-        return defense;
-    }
-
-    public int getSpeed() {
-        return speed;
-    }
-
-    public ArrayList<BaseHero> getMyParty() {
-        return myParty;
     }
 
     @Override
     public void step(ArrayList<BaseHero> enemy) {}
 
-    public Coordinates getPosition() {
-        return position;
-    }
-
-    public int[] getDamage() {
-        return damage;
+    @Override
+    public void logIt(BaseHero target, int damageValue) {
+        Main.lg.add(
+                new String[] {Integer.toString(Main.step), side, name+id, target.name+target.id, Integer.toString(damageValue)}
+        );
     }
 
     protected void damage(int damage) {
-        this.health = health - damage;
-        if (this.health <= 0) {
-            this.status = "dead";
-            this.health = 0;
+        health = health - damage;
+        if (health <= 0) {
+            status = "dead";
+            health = 0;
         }
-        if (this.health > this.maxHealth) this.health = this.maxHealth;
+        if (health > maxHealth) health = maxHealth;
     }
 
-    protected int damageValue (BaseHero h) {
-        int flag = this.getAttack() - h.getDefense();
+    protected int damageValue(BaseHero h) {
+        int flag = attack - h.defense;
         int value = 0;
-        if (flag == 0) value = ((this.getDamage()[0] + this.getDamage()[1]) / 2);
-        if (flag > 0) value = this.getDamage()[1];
-        if (flag < 0) value = this.getDamage()[0];
+        if (flag == 0) value = ((damage[0] + damage[1]) / 2);
+        if (flag > 0) value = damage[1];
+        if (flag < 0) value = damage[0];
         return value;
     }
+
 }
-
-
-   

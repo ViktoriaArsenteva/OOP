@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 public class Peasant extends BaseHero {
 
-    public Peasant(ArrayList<BaseHero> myParty, int x, int y) {
-       super(1, 1, new int[]{1, 1}, 1, 3, "Peasant", myParty, x, y);
+    public Peasant(ArrayList<BaseHero> myParty, int x, int y, String side) {
+        super(1, 1, new int[]{1, 1}, 1, 3, "Peasant", myParty, x, y, side);
     }
 
     @Override
     public void step(ArrayList<BaseHero> party) {
-        if (this.status.equals("dead")) return;
-        if (this.status.equals("used")) this.status = "stand";
+        if (status.equals("dead")) return;
+        if (status.equals("used")) status = "stand";
     }
 }
