@@ -3,39 +3,51 @@ package Main;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import chars.Team;
 
 public class Logger {
     private FileWriter fw;
-//    private HashMap<String, String> record;
+    private StringBuilder sb;
     private ArrayList<String[]> table;
-    private int tableRowSize;
 
-    public Logger(String filepath, String[] header) throws IOException {
-        fw = new FileWriter(filepath, true);
-        fw.append(String.join(";", header));
-//        record = new HashMap<>();
-        table = new ArrayList<>();
-        tableRowSize = header.length;
-//        for (String i: header) {
-//            record.put(i, "");
-//        }
+    private Team members;
+
+    String[] header;
+
+    public Logger(Team members) throws IOException {
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM.dd_HH.mm.ss");
+        sb = new StringBuilder("D:\\IT\\Java\\Fight in console\\log\\");
+        sb.append(dtf.format(LocalDateTime.now()));
+        sb.append(".csv");
+
+        fw = new FileWriter(sb.toString(), false);
+        sb.delete(0, sb.length());
+
+        this.header = new String[]{"StepNo", "Fraction", "Me", "MyPos", "Target", "TargetPos", "Damage val", "MyStatus"};
+        this.members = members;
+
     }
-        //"Step No", "Side", "Hero+ID", "Target", "Damage val"
-        public void add (String[] data) {
-            table.add(data);
-        }
-
-        public void print() throws IOException {
-            for (String[] i: table) {
-                fw.append("\r\n");
-                fw.append(String.join(";", i));
+        public void printDefault(int step) throws IOException {
+            if (step == 0) {
+                for (int i = 0; i < members.size(); i++) {
+                    fw.append(members.get(i).getInfo());
+                    fw.append("\r\n");
+                }
+                fw.append(String.join(";", header));
+            } else {
+                for (int i = 0; i < members.size(); i++) {
+                    fw.append("\r\n");
+                    fw.append(Integer.toString(step));
+                    fw.append(";");
+                    fw.append(members.get(i).defaultLog());
+                }
             }
+            fw.flush();
         }
-
-    public void close() throws IOException {
-        fw.flush();
-    }
 
 }

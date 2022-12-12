@@ -4,47 +4,28 @@ package Main;
 import chars.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
 
 public class Main {
 
-    public static final int TEAM_SIZE = 10;
-    public static final int FIELD_SIZE = 10;
+    public static void main(String[] args) throws IOException {
 
-    public static int step = 1;
+        int step = 0;
+        int teamSize = 10;
+        int fieldSize = 10;
+        String [] request = new String [] {"Light", "Peasant", "Robber", "Sniper", "Wizard"};
+        String [] request1 = new String [] {"Dark", "Peasant", "Spearman", "Xbowman", "Monk"};
 
-    public static final String[] logHeader = new String[]{"Step No", "Side", "Hero+ID", "Target", "Damage val"};
-    public static Logger lg;
-
-    static {
-        try {
-            lg = new Logger("log.csv", logHeader);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static ArrayList<BaseHero> lightSide;
-    static ArrayList<BaseHero> darkSide;
-
-    public static void main(String[] args) throws IOException { //кнопка вкл для всей игры
-
-        String [] request = new String [] {"Peasant", "Robber", "Sniper", "Warlock"};
-        String [] request1 = new String [] {"Peasant", "Spearman", "Xbowman", "Monk"};
-        Main.lightSide = Team.make(TEAM_SIZE, request, 0, 0, "Light");
-        Main.darkSide = Team.make(TEAM_SIZE, request1, 0, Main.FIELD_SIZE-1, "Dark");
-
+        Turn turn = new Turn(teamSize, request, request1, fieldSize);
+        Logger lg = new Logger(turn.getMembers());
+        ConsoleView view = new ConsoleView(teamSize, fieldSize, turn.getMembers());
 
         do {
-            Turn.orderBySpeed();
-            System.out.println(ConsoleView.field());
+            turn.round(step);
+            lg.printDefault(step);
+            System.out.println(view.show(step));
             step++;
-            lg.print();
+
         } while ((char) System.in.read() != 'Q');
-
-        lg.close();
-
 
     }
 }

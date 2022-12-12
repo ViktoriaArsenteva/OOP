@@ -1,31 +1,32 @@
 package chars;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
-import Main.*;
 
-public abstract class BaseHero implements BaseInterface, Iterator {
+public abstract class BaseHero implements BaseInterface {
     protected int attack;
     protected int defense;
+
     protected int[] damage;
+
+    protected int damageValue;
     protected int health;
     protected int maxHealth;
     protected int speed;
     protected String name;
-    protected ArrayList<BaseHero> myParty;
+
+    protected BaseHero target;
+
     protected Coordinates position;
     protected String status;
 
-    protected String side;
+    protected String fraction;
 
     private static int idCount = 0;
-
     protected int id;
 
-    public BaseHero(int attack, int defense, int[] damage, int health, int speed, String name, ArrayList<BaseHero> myParty, int x, int y, String side) {
+    public BaseHero(int attack, int defense, int[] damage, int health, int speed,
+                    String name, int x, int y, String fraction) {
         this.attack = attack;
         this.defense = defense;
         this.damage = damage;
@@ -33,20 +34,16 @@ public abstract class BaseHero implements BaseInterface, Iterator {
         this.health = maxHealth;
         this.speed = speed;
         this.name = name;
-        this.myParty = myParty;
         this.position = new Coordinates(x, y);
         this.status = "stand";
         this.id = idCount++;
-        this.side = side;
+        this.fraction = fraction;
+        this.target = this;
+        this.damageValue = 0;
     }
-    /* Шпаргалка по имеющимся статусам
-     * stand - для всех. Жив и готов сражаться. По сути аналогичен статусу alive
-     * used - для крестьян, что они свою стрелу подали. Или для стрелков, что у них боеприпас закончился, а здоровье ещё нет
-     * dead - умер. Здоровье = или меньше 0
-     * */
 
-    public int getId() {
-        return id;
+    public String getFraction() {
+        return fraction;
     }
 
     public String getStatus() {
@@ -57,41 +54,6 @@ public abstract class BaseHero implements BaseInterface, Iterator {
         return position;
     }
 
-    @Override
-    public String getInfo() {
-        return "name=" + name +
-                ", attack=" + attack +
-                ", defense=" + defense +
-                ", damage=" + Arrays.toString(damage) +
-                ", health=" + health +
-                ", speed=" + speed;
-    }
-
-    private int classFields;
-
-    @Override
-    public boolean hasNext() {
-        return classFields++ < 8;
-    }
-
-    @Override
-    public String next() {
-        switch (classFields) {
-            case 0: return "name=" + name;
-            case 1: return ", attack=" + attack;
-            case 2: return ", defense=" + defense;
-            case 3: return ", damage=" + Arrays.toString(damage);
-            case 4: return ", Max HP=" + maxHealth;
-            case 5: return ", HP=" + health;
-            case 6: return ", speed=" + speed;
-            case 7: return ", status=" + status;
-
-
-        }
-        return null;
-    }
-
-
     public String getName() {
         return name;
     }
@@ -101,14 +63,7 @@ public abstract class BaseHero implements BaseInterface, Iterator {
     }
 
     @Override
-    public void step(ArrayList<BaseHero> enemy) {}
-
-    @Override
-    public void logIt(BaseHero target, int damageValue) {
-        Main.lg.add(
-                new String[] {Integer.toString(Main.step), side, name+id, target.name+target.id, Integer.toString(damageValue)}
-        );
-    }
+    public void step(Team team) {}
 
     protected void damage(int damage) {
         health = health - damage;
@@ -126,6 +81,25 @@ public abstract class BaseHero implements BaseInterface, Iterator {
         if (flag > 0) value = damage[1];
         if (flag < 0) value = damage[0];
         return value;
+    }
+
+    @Override
+    public String getInfo() {
+        return "fraction=" + fraction +
+                ";name=" + name + id +
+                ";attack=" + attack +
+                ";defense=" + defense +
+                ";damage=" + Arrays.toString(damage) +
+                ";health=" + health +
+                ";speed=" + speed +
+                ";status=" + status +
+                ";position=" + position.toString();
+
+    }
+
+    public String defaultLog() {
+        return String.join(";", fraction, name+id,
+                position.toString(), target.name+target.id, target.position.toString(), String.valueOf(damageValue), status);
     }
 
 }
