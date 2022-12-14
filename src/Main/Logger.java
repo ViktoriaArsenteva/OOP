@@ -21,7 +21,7 @@ public class Logger {
     public Logger(Team members) throws IOException {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM.dd_HH.mm.ss");
-        sb = new StringBuilder("D:\\IT\\Java\\Fight in console\\log\\");
+        sb = new StringBuilder("D:\\IT\\Java\\Fight\\log\\");
         sb.append(dtf.format(LocalDateTime.now()));
         sb.append(".csv");
 
